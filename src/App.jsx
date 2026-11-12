@@ -5,6 +5,8 @@ function App() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [customerReferralCode, setCustomerReferralCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState("");
 
@@ -31,6 +33,10 @@ function App() {
           setPaymentMessage(
             "Payment successful! Thank you for pre-ordering your notebook."
           );
+
+          if (result.referralCode) {
+            setCustomerReferralCode(result.referralCode);
+          }
         } else {
           setPaymentMessage(
             "We could not confirm this payment. Please contact us with your payment reference: " +
@@ -46,7 +52,10 @@ function App() {
         setLoading(false);
       }
     }
-    
+
+    verifyPayment();
+  }, []);
+
   useEffect(() => {
     function handlePageShow() {
       const params = new URLSearchParams(window.location.search);
@@ -61,10 +70,6 @@ function App() {
     return () => {
       window.removeEventListener("pageshow", handlePageShow);
     };
-  }, []);
-    
-
-    verifyPayment();
   }, []);
 
   async function handleCheckout(event) {
@@ -81,7 +86,8 @@ function App() {
         body: JSON.stringify({
           name,
           email,
-          phone
+          phone,
+          referralCode
         })
       });
 
@@ -204,6 +210,16 @@ function App() {
             />
           </label>
 
+          <label>
+            Referral code (optional)
+            <input
+              type="text"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+              placeholder="Enter a friend's referral code"
+            />
+          </label>
+
           <div className="checkout-total">
             <span>Pre-order total</span>
             <strong>₦3,000</strong>
@@ -217,6 +233,26 @@ function App() {
             <p role="status" className="payment-message">
               {paymentMessage}
             </p>
+          )}
+
+          {customerReferralCode && (
+            <div className="payment-message">
+              <strong>Your personal referral code</strong>
+              <h2>{customerReferralCode}</h2>
+              <p>
+                Share this code with friends. Every 10 successful referrals
+                earns you a ₦1,000 cash reward, subject to approval.
+              </p>
+              <button
+                type="button"
+                className="cta"
+                onClick={() =>
+                  navigator.clipboard.writeText(customerReferralCode)
+                }
+              >
+                COPY MY REFERRAL CODE
+              </button>
+            </div>
           )}
         </form>
 
@@ -242,4 +278,3 @@ function App() {
 }
 
 export default App;
-      
