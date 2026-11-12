@@ -225,7 +225,7 @@ function App() {
         </p>
 
         <a
-          href="https://wa.me/23490772637667"
+          href="https://wa.me/2349077237667"
           className="contact-link"
         >
           Questions? Contact us on WhatsApp ↗
