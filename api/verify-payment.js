@@ -38,7 +38,6 @@ export default async function handler(req, res) {
     if (
       payment.status !== "success" ||
       payment.amount !== 300000 ||
-      referralCode: payment.metadata?.referral_code || ""
       payment.currency !== "NGN"
     ) {
       return res.status(400).json({
@@ -47,7 +46,8 @@ export default async function handler(req, res) {
     }
 
     let notificationStatus = "not_configured";
- let customerReferralCode = "";
+    let customerReferralCode = "";
+
     const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
     const scriptSecret = process.env.GOOGLE_SCRIPT_SECRET;
 
@@ -70,7 +70,8 @@ export default async function handler(req, res) {
               payment.metadata?.customer_phone ||
               payment.customer?.phone ||
               "",
-            amount: payment.amount
+            amount: payment.amount,
+            referralCode: payment.metadata?.referral_code || ""
           })
         });
 
@@ -79,7 +80,9 @@ export default async function handler(req, res) {
         notificationStatus = orderResult.success
           ? "sent"
           : "failed";
+
         customerReferralCode = orderResult.referralCode || "";
+
       } catch (error) {
         notificationStatus = "failed";
       }
@@ -90,7 +93,7 @@ export default async function handler(req, res) {
       reference: payment.reference,
       amount: payment.amount,
       currency: payment.currency,
-      notificationStatus
+      notificationStatus,
       referralCode: customerReferralCode
     });
 
@@ -99,4 +102,4 @@ export default async function handler(req, res) {
       error: "Payment verification failed"
     });
   }
-      }
+}
