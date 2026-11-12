@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const { email, name, phone } = req.body || {};
+  const { email, name, phone, referralCode } = req.body || {};
 
   if (!email || !name || !phone) {
     return res.status(400).json({
@@ -38,7 +38,8 @@ export default async function handler(req, res) {
             customer_name: name,
             customer_phone: phone,
             product: "20s in Motion Notebook",
-            order_type: "Pre-order"
+            order_type: "Pre-order",
+            referral_code: referralCode || ""
           }
         })
       }
@@ -56,10 +57,10 @@ export default async function handler(req, res) {
       authorization_url: data.data.authorization_url,
       reference: data.data.reference
     });
+
   } catch (error) {
     return res.status(500).json({
       error: "Payment could not be initialized"
     });
   }
 }
-  
