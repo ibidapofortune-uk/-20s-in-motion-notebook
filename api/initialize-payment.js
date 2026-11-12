@@ -33,7 +33,7 @@ export default async function handler(req, res) {
           email,
           amount: 300000,
           currency: "NGN",
-          callback_url: `${process.env.APP_URL}/payment-callback`,
+          callback_url: process.env.APP_URL,
           metadata: {
             customer_name: name,
             customer_phone: phone,
