@@ -47,7 +47,7 @@ export default async function handler(req, res) {
     }
 
     let notificationStatus = "not_configured";
-
+ let customerReferralCode = "";
     const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
     const scriptSecret = process.env.GOOGLE_SCRIPT_SECRET;
 
@@ -77,6 +77,7 @@ export default async function handler(req, res) {
         const orderResult = await orderResponse.json();
 
         notificationStatus = orderResult.success
+          customerReferralCode = orderResult.referralCode || "";
           ? "sent"
           : "failed";
       } catch (error) {
