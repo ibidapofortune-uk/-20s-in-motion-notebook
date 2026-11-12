@@ -45,15 +45,55 @@ export default async function handler(req, res) {
       });
     }
 
+    let notificationStatus = "not_configured";
+
+    const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
+    const scriptSecret = process.env.GOOGLE_SCRIPT_SECRET;
+
+    if (scriptUrl && scriptSecret) {
+      try {
+        const orderResponse = await fetch(scriptUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            secret: scriptSecret,
+            reference: payment.reference,
+            name:
+              payment.metadata?.customer_name ||
+              payment.customer?.first_name ||
+              "Customer",
+            email: payment.customer?.email,
+            phone:
+              payment.metadata?.customer_phone ||
+              payment.customer?.phone ||
+              "",
+            amount: payment.amount
+          })
+        });
+
+        const orderResult = await orderResponse.json();
+
+        notificationStatus = orderResult.success
+          ? "sent"
+          : "failed";
+      } catch (error) {
+        notificationStatus = "failed";
+      }
+    }
+
     return res.status(200).json({
       verified: true,
       reference: payment.reference,
       amount: payment.amount,
-      currency: payment.currency
+      currency: payment.currency,
+      notificationStatus
     });
+
   } catch (error) {
     return res.status(500).json({
       error: "Payment verification failed"
     });
   }
-}
+      }
