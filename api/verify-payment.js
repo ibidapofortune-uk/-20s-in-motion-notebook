@@ -91,6 +91,7 @@ export default async function handler(req, res) {
       amount: payment.amount,
       currency: payment.currency,
       notificationStatus
+      referralCode: customerReferralCode
     });
 
   } catch (error) {
