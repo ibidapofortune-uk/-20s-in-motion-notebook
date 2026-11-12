@@ -46,6 +46,23 @@ function App() {
         setLoading(false);
       }
     }
+    
+  useEffect(() => {
+    function handlePageShow() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (!params.get("reference")) {
+        setLoading(false);
+      }
+    }
+
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
+    
 
     verifyPayment();
   }, []);
