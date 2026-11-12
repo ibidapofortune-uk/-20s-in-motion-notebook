@@ -77,9 +77,9 @@ export default async function handler(req, res) {
         const orderResult = await orderResponse.json();
 
         notificationStatus = orderResult.success
-          customerReferralCode = orderResult.referralCode || "";
           ? "sent"
           : "failed";
+        customerReferralCode = orderResult.referralCode || "";
       } catch (error) {
         notificationStatus = "failed";
       }
