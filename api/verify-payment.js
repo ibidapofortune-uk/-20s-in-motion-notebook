@@ -38,6 +38,7 @@ export default async function handler(req, res) {
     if (
       payment.status !== "success" ||
       payment.amount !== 300000 ||
+      referralCode: payment.metadata?.referral_code || ""
       payment.currency !== "NGN"
     ) {
       return res.status(400).json({
